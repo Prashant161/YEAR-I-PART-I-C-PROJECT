@@ -390,6 +390,7 @@ void clientFunction(){
 				gets(rePassword);
 				if(strcmp(password, rePassword)==0){
 					printf("\nPassword set successfully. Please re-Run to login.");
+					getch();
 					strcpy(c[t].password, password);
 					fseek(fptr, t * sizeof(struct client), SEEK_SET);
     				fwrite(&c[t], sizeof(struct client), 1, fptr);
@@ -440,6 +441,7 @@ void clientFunction(){
 						}
 						else{
 							printf("\nContact nearest branch!\n");
+							getch();
 							break;
 						}
 					}
@@ -468,11 +470,12 @@ void clientFunction(){
 	}
 	else if(t==-1){
 		printf("Client not found! Contact to your nearest branch.\n");
+		printf("\nPress enter to return to main menu");
+		getch();
 		}
 	
 	fclose(fptr);
 }
-
 
 
 
