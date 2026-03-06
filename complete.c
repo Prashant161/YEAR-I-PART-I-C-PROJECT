@@ -356,10 +356,11 @@ int withdrawAmnt(){
 
 void clientFunction(){
 	char name[50], phoneNo[15], password[30], rePassword[30];
+	float trans;//transfer amount
 	printf("\t\tWelcome to client portal!\n\n ");
 	int cnt=count();
  //	int choice = 2;
-	int flag=0, t, i, flag2=0, attempts, menuOption;
+	int flag=0, t, i, a, flag2=0, flag3=0, attempts, menuOption;
     FILE *fptr;
 	fptr = fopen("clients.txt", "rb+");
 	fread(c, sizeof(struct client), 3, fptr);
@@ -420,18 +421,54 @@ void clientFunction(){
 						printf("\nLogin Successful!\n\n");
 						printf("Name: %s\nID: %d\nAccount number: %s\nPhone number: %s\nAccount balance: %f\nCurrent interest rate: %f", c[t].name, c[t].id, c[t].accountNo, c[t].phoneNumber, c[t].balance, c[t].interestRate);
 						attempts = 0;
+						while(1){
 						printf("\n\n\n**********1.Transfer Money*********\n");
-						printf("**********2Exit           *********\n");
+						printf("**********2.Exit          *********\n");
 						scanf("%d", &menuOption);
 						fflush(stdin);
 						if(menuOption==1){
-							printf("Money transfer process under construction. \nThis process should ask user to type phone number or account number. \ncheck if it matches anyone in database. \nif yes, continue money transfer. \nif no destination account doesnot exist. Contact your nearest branch. ");
+							a=search();
+							char accno[20];
+							printf("\nAccoount number:\t");
+							fflush(stdin);
+							gets(accno);
+							for(i = 0; i<cnt; i++){
+								if(strcmp(accno, c[i].accountNo)==0){
+									flag3 = 1;
+									break;
+								}
+								else{
+									flag3=0;
+								}
+							}
+							attempts=3;
+							
+							if(a!=-1 && flag3==1){
+								while(attempts!=0){
+								printf("\nAmount:\t");
+								scanf("%f", &trans);
+								if(trans<=c[a].balance){
+									c[t].balance=c[t].balance-trans;
+									c[a].balance=c[a].balance+trans;
+									attempts=0;
+									printf("Balance transfer successful. Relogin to view updated info\n");
+								}
+								else{
+									printf("\nInsufficient Balance in account");
+									attempts--;
+									printf("\n%d attempts left.", attempts);
+								}
+							}}
+							else if(a==-1 || flag3==0){
+								printf("\n Name and Account number didn't match or doesn't exist. Contact your nearest branch for further info.'\n");
+								
+							}
 							
 						}
 						else if(menuOption==2){
 							printf("\n");
 							break;
-						}
+						}}
 					}
 					else{
 						printf("\n\aError! Password doesn't match.");
@@ -473,9 +510,12 @@ void clientFunction(){
 		printf("\nPress enter to return to main menu");
 		getch();
 		}
-	
+	rewind(fptr);
+	fwrite(c, sizeof(struct client), cnt, fptr);
 	fclose(fptr);
 }
 
 
-
+void transfer(){
+	
+}
