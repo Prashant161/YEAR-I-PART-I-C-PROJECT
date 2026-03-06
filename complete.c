@@ -30,9 +30,8 @@ int main()
 	printf("**************************************************\n");
 	printf("**************************************************\n\n");
 	printf("\tSelect Menu:\n");
-	printf("\t1.Admin\n\t2.Client\n");
-	while(1)
-	{
+	printf("\t1.Admin\n\t2.Client\n\t3.Exit\n");
+
 		gets(choice_1);
 		if(strcmp(choice_1, "1") == 0 || strcasecmp(choice_1, "admin")==0)
 			{
@@ -43,7 +42,7 @@ int main()
 				if(value==TRUE)
 				{
 					adminFunction();
-					break;
+					
 				}
 				else{
 					break;
@@ -53,8 +52,12 @@ int main()
 		else if(strcmp(choice_1, "2") == 0 || strcasecmp(choice_1, "client")==0)
 			{
 				clientFunction();
-				break;
+				
 			}
+		else if(strcmp(choice_1, "3") == 0){
+			printf("\nProgram Terminated\n");
+			break;
+		}
 		else
 			{
 				printf("\tNo valid options selected! Try again or press 'esc' to exit!\n");
@@ -64,7 +67,7 @@ int main()
 						break;
 					}
 			}
-	}}
+}
 
 	
 	getch();
