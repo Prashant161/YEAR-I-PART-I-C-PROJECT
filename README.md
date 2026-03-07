@@ -68,8 +68,12 @@ This program creates a **dummy database file (`clients.txt`)** containing three 
   ## Project Structure
   
 --> complete.c        # Main banking system program
+
 --> clientPart.c      # Client-side functionality (no need to run separately)
+
 --> dummyDatabase.c   # Generates dummy client records (run for ease in testing)
+
 --> clients.txt       # Database file (generated after running program)
+
 --> README.md         # Project documentation
 
