@@ -62,3 +62,14 @@ This program creates a **dummy database file (`clients.txt`)** containing three 
 - Client search is **case-insensitive**.
 - The **full name must be entered** for successful search.
 - Account data is stored in a file (`clients.txt`) using **file handling in C**.
+
+---
+
+  ## Project Structure
+  
+├── complete.c        # Main banking system program
+├── clientPart.c      # Client-side functionality (no need to run separately)
+├── dummyDatabase.c   # Generates dummy client records (run for ease in testing)
+├── clients.txt       # Database file (generated after running program)
+└── README.md         # Project documentation
+
