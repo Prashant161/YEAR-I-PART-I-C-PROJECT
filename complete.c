@@ -97,7 +97,8 @@ int login()
 		pass[i]='\0';
 		if ((strcmp(PASSWORD, pass)== 0) && strcmp(USERNAME, user)==0)
 		{
-			printf("\n------------Login successful!------------ ");
+			printf("\n\n------------Login successful! Wait few seeconds------------ ");
+	        Sleep(1500);
 			return 1;
 			attempts = 0;
 		}
@@ -163,13 +164,14 @@ int count()
 //admin function
 void adminFunction()
 { 
-	int cnt=count();int adch, subch;
+	int cnt=count();int adch, subch, menuch;
 	char name[30];
 	int flag=0, t, i;
     FILE *fptr;
 	fptr = fopen("clients.txt", "rb");
 	fread(c, sizeof(struct client), cnt, fptr);
 	while(1){
+	system("cls");
 	printf("*************1.Register client **********\n");
 	printf("*************2.Search Client   **********\n");
 	printf("*************3.Update Balance  **********\n");
@@ -178,20 +180,25 @@ void adminFunction()
 	scanf("%d", &adch);
 	fflush(stdin);
 	if (adch==2){
+	while(1){
 	t=search();
 	if(t!=-1)
 	{
 		printf("Client found! \n");
 		printf("Name: %s\nID: %d\nAccount number: %s\nPhone number: %s\nAccount balance: %f\nInterest amount: %f\nCurrent interest rate: %f\n", c[t].name, c[t].id, c[t].accountNo, c[t].phoneNumber, c[t].balance, c[t].interest, c[t].interestRate);
-	
+	    
 	}
 	else if(t==-1){
 		char ch;
-		printf("Client not found! Press 1 for new registration.\n");
+		printf("Client not found! Press 1 for new registration and esc to return to menu.\n");
+		fflush(stdin);
 		if((ch=getch())==49)
 		{
 			newRegistration();
 			//printf("new registration function currently under construction. Please come back later!");
+		}
+		else if((ch=getch())==27){
+			break;
 		}
 		else
 		{
@@ -200,6 +207,16 @@ void adminFunction()
 			return 1;
 		}
 		
+	}
+	printf("\n\n1.Continue searching\n");
+	printf("2.Return\n");
+	scanf("%d", &menuch);
+	if(menuch==1){
+		continue;
+	}
+	else if(menuch==2){
+		break;
+	}
 	}}
 	else if(adch == 1){
 		newRegistration();
@@ -269,8 +286,8 @@ void newRegistration()
 			scanf("%f", &c[i].interestRate);
 		}
 		fwrite(&c[i], sizeof(struct client),1, fptr);
-		printf("\nClients data stored successfully!. Relogin to view updated info\n");
-	
+		printf("\nClients data stored successfully!. press enter to return to menu.\n");
+		getch();
 	fclose(fptr);
 	
 }
@@ -290,10 +307,12 @@ void addInterest(){
 		    scanf("%d", &time);
 	    	c[a].interest = (c[a].balance*(time/12.0)*c[a].interestRate)/100;
 	        c[a].balance=c[a].balance + c[a].interest;
-	        printf("\nBalance Updated Successfully. Relogin to view updated info\n");
+	        printf("\nBalance Updated Successfully. press enter to return to menu\n");
+	        getch();
 		}
 		else if(a==-1){
 			printf("\nNo such client found.\n");
+			Sleep(1500);
 		}
 	    rewind(fptr);
 	    fseek(fptr, a * sizeof(struct client), SEEK_SET);
@@ -312,10 +331,12 @@ void updateDepo(){
 		printf("Amount:\t");
 	    scanf("%d", &amnt);
 		c[a].balance=c[a].balance + amnt;
-		printf("\nBalance Updated Successfully. Relogin to view updated info\n");
+		printf("\nBalance Updated Successfully. press enter to return to menu\n");
+		getch();
 	}
 	else if(a==-1){
 		printf("\nNo such client exist.\n");
+		Sleep(1500);
 	}
     rewind(fptr);
     fwrite(c, sizeof(struct client), cnt, fptr);
@@ -345,11 +366,19 @@ int withdrawAmnt(){
 	if(a!=-1){
 		printf("\nEnter the amount withdrawn:\t");
 		scanf("%d", &with);
+		if(with<=c[a].balance){
 		c[a].balance=c[a].balance-with;
-		printf("\nBalance Updated Successfully.\n");
+		printf("\nBalance Updated Successfully.Press enter to return to menu\n");
+		getch();
+	    }
+	    else{
+	    	printf("Insufficient Balance.");
+	    	Sleep(1500);
+		}
 	}
 	else if(a==-1){
 		printf("\nNo such client exist.\n");
+		Sleep(1500);
 	}
 	rewind(fptr);
     fseek(fptr, a * sizeof(struct client), SEEK_SET);
@@ -360,6 +389,7 @@ int withdrawAmnt(){
 void clientFunction(){
 	char name[50], phoneNo[15], password[30], rePassword[30];
 	float trans;//transfer amount
+	system("cls");
 	printf("\t\tWelcome to client portal!\n\n ");
 	int cnt=count();
  //	int choice = 2;
@@ -421,10 +451,13 @@ void clientFunction(){
 					fflush(stdin);
 					gets(password);
 					if(strcmp(c[t].password, password)==0){
-						printf("\nLogin Successful!\n\n");
+						printf("\nLogin Successful! Wait few seconds\n\n");
+						Sleep(1500);
+						while(1){
+						system("cls");
 						printf("Name: %s\nID: %d\nAccount number: %s\nPhone number: %s\nAccount balance: %f\nCurrent interest rate: %f", c[t].name, c[t].id, c[t].accountNo, c[t].phoneNumber, c[t].balance, c[t].interestRate);
 						attempts = 0;
-						while(1){
+						
 						printf("\n\n\n**********1.Transfer Money*********\n");
 						printf("**********2.Exit          *********\n");
 						scanf("%d", &menuOption);
@@ -450,20 +483,28 @@ void clientFunction(){
 								while(attempts!=0){
 								printf("\nAmount:\t");
 								scanf("%f", &trans);
-								if(trans<=c[a].balance){
+								if(trans<=c[t].balance){
 									c[t].balance=c[t].balance-trans;
 									c[a].balance=c[a].balance+trans;
 									attempts=0;
-									printf("Balance transfer successful. Relogin to view updated info\n");
+									printf("Balance transfer successful. Press enter to return to menu\n");
+									getch();
 								}
 								else{
 									printf("\nInsufficient Balance in account");
 									attempts--;
 									printf("\n%d attempts left.", attempts);
+									if(attempts==0){
+										printf("\nTry again or contact your nearest branch\n");
+										printf("Press enter to return to transfer menu.");
+										getch();
+										
+									}
 								}
 							}}
 							else if(a==-1 || flag3==0){
-								printf("\n Name and Account number didn't match or doesn't exist. Contact your nearest branch for further info.'\n");
+								printf("\n Name and Account number didn't match or doesn't exist.'\n");
+								Sleep(2000);
 								
 							}
 							
@@ -481,7 +522,7 @@ void clientFunction(){
 						}
 						else{
 							printf("\nContact nearest branch!\n");
-							getch();
+							Sleep(1500);
 							break;
 						}
 					}
@@ -501,6 +542,7 @@ void clientFunction(){
 				}
 				else{
 					printf("\nContact your nearest branch!\n");
+					Sleep(1500);
 					break;
 				}
 			}
@@ -519,6 +561,4 @@ void clientFunction(){
 }
 
 
-void transfer(){
-	
-}
+
